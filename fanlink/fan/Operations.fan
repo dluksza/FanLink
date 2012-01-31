@@ -7,11 +7,15 @@ class Operations {
     collectionName := Utils.mongoDocName(type)
     Str:Obj? doc := [:] 
     type.fields.each |field| {
-      if (!Utils.isMongoDocId(field))
+      if (!Utils.isMongoDocId(field) && !isTransient(field))
         doc.add(field.name, field.get(obj))
     }
 
     db.collection(collectionName).insert(doc)
   }
   
+  private static Bool isTransient(Field field) {
+    return field.hasFacet(Transient#)
+  }
+
 }

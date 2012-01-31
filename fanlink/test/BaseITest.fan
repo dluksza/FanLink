@@ -32,5 +32,23 @@ class BaseITest : Test {
     verify(map["decimal"] == 8.0f)
     verify(map["string"] == "asd")
   }
-  
+
+  Void testNotPersistingTransientFields() {
+    // given
+    obj := TestObjWithTransient {
+      transient = "transient"
+      persistent = "persistent"
+    }
+
+    //when
+    Operations.persistObj(db, obj)
+
+    // then
+    result := db.collection(Utils.mongoDocName(TestObjWithTransient#)).find
+    verify(result.count == 1)
+    map := result.next
+    verify(map["persistent"] == "persistent")
+    verify(!map.containsKey("transient"))
+  }
+
 }

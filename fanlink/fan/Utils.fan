@@ -12,4 +12,15 @@ internal final class Utils {
     return field.type == ObjectID# && field.name == "id"
   }
   
+  static Bool isComplexType(Type type) {
+    return type == MongoDoc#;
+  }
+  
+  static Bool isSimpleType(Type type) {
+    return type == Str# || type == Int# || type == Float# ||
+            type == Decimal# || type == Date# || type == Buf# ||
+            type == List# || type == Bool# || type == Map# ||
+            type == Code# || type == ObjectID#;
+  }
+  
 }

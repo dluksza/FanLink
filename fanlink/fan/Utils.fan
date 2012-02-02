@@ -9,18 +9,20 @@ internal final class Utils {
   }
   
   static Bool isMongoDocId(Field field) {
-    return field.type == ObjectID# && field.name == "id"
+    nonNullable := field.type.toNonNullable
+    return nonNullable == ObjectID# && field.name == "id"
   }
   
   static Bool isComplexType(Type type) {
-    return type == MongoDoc#;
+    return type.mixins.contains(MongoDoc#)
   }
   
   static Bool isSimpleType(Type type) {
-    return type == Str# || type == Int# || type == Float# ||
-            type == Decimal# || type == Date# || type == Buf# ||
-            type == List# || type == Bool# || type == Map# ||
-            type == Code# || type == ObjectID#;
+    nonNullable := type.toNonNullable
+    return nonNullable == Str# || nonNullable == Int# || nonNullable == Float# ||
+            nonNullable == Decimal# || nonNullable == Date# || nonNullable == Buf# ||
+            nonNullable == List# || nonNullable == Bool# || nonNullable == Map# ||
+            nonNullable == Code# || nonNullable == ObjectID#;
   }
   
 }

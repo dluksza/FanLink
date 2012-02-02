@@ -6,6 +6,8 @@ const class MongoDocStackElement {
   const Field[] parentFields
 
   const Str:Obj? parentMap
+  
+  const Obj parentObj
 
   new make(|This f| f) {
     f(this)

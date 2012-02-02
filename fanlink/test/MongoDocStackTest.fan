@@ -9,6 +9,7 @@ class MongoDocStackTest : Test {
       name = "first element"
       parentFields = [,]
       parentMap = [:]
+      parentObj = it
     }
 
     stack.put(element1)
@@ -20,11 +21,13 @@ class MongoDocStackTest : Test {
       name = "second element"
       parentFields = [,]
       parentMap = [:]
+      parentObj = it
     }
     element3 := MongoDocStackElement {
       name = "third element"
       parentFields = [,]
       parentMap = [:]
+      parentObj = it
     }
 
     stack.put(element2)

@@ -10,8 +10,7 @@ class Operations {
     collectionName := Utils.mongoDocName(type)
     
     while (true) {
-      field := fields.pop
-      if (field == null) {
+      if (fields.isEmpty) {
         if (!stack.isEmpty){
           // restore from stack
           element := stack.pop
@@ -19,12 +18,15 @@ class Operations {
           doc = element.parentMap.dup.add(element.name, doc)
           obj = element.parentObj
           continue
+
         } else
           break
       }
+
+      field := fields.pop
       // don't persist transient and id fields
       if (isTransient(field) || Utils.isMongoDocId(field))
-        continue;
+        continue
       
       fType := field.type
       value := field.get(obj)

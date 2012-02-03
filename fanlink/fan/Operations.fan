@@ -27,10 +27,11 @@ class Operations {
         continue;
       
       fType := field.type
-      if (Utils.isSimpleType(fType))
+      value := field.get(obj)
+      if (Utils.isSimpleType(value))
         // persist simple field
         doc.add(field.name, field.get(obj))
-      else if (Utils.isComplexType(fType) && field.get(obj) != null) {
+      else if (Utils.isComplexType(fType) && value != null) {
         // put current data on stack
         stack.put(MongoDocStackElement {
           name = field.name
@@ -41,7 +42,7 @@ class Operations {
         // reset data
         doc = [:]
         fields = field.type.fields.dup
-        obj = field.get(obj)
+        obj = value
       } else
         throw FanLinkSerializationErr("Cannot serialize object type ${fType} in obj ${type}")
     }

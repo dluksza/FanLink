@@ -26,9 +26,7 @@ class BaseITest : Test {
     Operations.persistObj(db, obj)
     
     // then
-    result := db.collection(Utils.mongoDocName(TestObj#)).find
-    verify(result.count == 1)
-    map := result.next
+    map := findPersistedObj(TestObj#)
     verify(map["decimal"] == 8.0f)
     verify(map["string"] == "asd")
   }
@@ -44,9 +42,7 @@ class BaseITest : Test {
     Operations.persistObj(db, obj)
 
     // then
-    result := db.collection(Utils.mongoDocName(TestObjWithTransient#)).find
-    verify(result.count == 1)
-    map := result.next
+    map := findPersistedObj(TestObjWithTransient#)
     verify(map["persistent"] == "persistent")
     verify(!map.containsKey("transient"))
   }
@@ -65,6 +61,30 @@ class BaseITest : Test {
     }
     fail("FanLinkSeerializationErr should be thrown")
   }
+  
+  Void testPersistingNestedListsAndMaps() {
+    // given
+    obj := TestObjWithListAndMap {
+      strings = ["one", "two"]
+      mapping = ["one": "jeden", "two": "dwa"]
+    }
+    
+    // when
+    Operations.persistObj(db, obj)
+    
+    // then
+    map := findPersistedObj(TestObjWithListAndMap#)
+    verify(map["strings"] is List)
+    list := (List) map["strings"]
+    verify(list.size == 2)
+    verify(list.get(0) == "one")
+    verify(list.get(1) == "two")
+    verify(map["mapping"] is Map)
+    mapping := (Map) map["mapping"]
+    verify(mapping.size == 2)
+    verify(mapping["one"] == "jeden")
+    verify(mapping["two"] == "dwa")
+  }
 
   Void testPersistingNestedObjects() {
     // given
@@ -78,12 +98,16 @@ class BaseITest : Test {
     Operations.persistObj(db, obj)
 
     // then
-    result := db.collection(Utils.mongoDocName(TestObjWithNested#)).find
-    verify(result.count == 1)
-    map := result.next
+    map := findPersistedObj(TestObjWithNested#)
     verify(map["nested"] is Map)
     nested := (Map) map["nested"]
     verify(nested["str"] == "test")
   }
 
+  private Str:Obj? findPersistedObj(Type type) {
+    result := db.collection(Utils.mongoDocName(type)).find
+    verify(result.count == 1)
+    return result.next
+  }
+  
 }

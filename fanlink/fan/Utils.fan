@@ -24,4 +24,9 @@ internal final class Utils {
             obj is Code || obj is ObjectID;
   }
   
+  static Bool isParametrizedWithMongoDoc(Type type) {
+    parameter := type.params["V"]
+    return parameter?.fits(MongoDoc#) ?: false
+  }
+  
 }

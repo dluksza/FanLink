@@ -76,6 +76,22 @@ class UtilsTest : Test {
     verify(Utils.isComplexType(TestObj#))
     verify(Utils.isComplexType(TestObj?#))
   }
+  
+  Void testIsParametrizedWithMongoDoc() {
+    verify(!Utils.isParametrizedWithMongoDoc(Str#))
+    verify(!Utils.isParametrizedWithMongoDoc(Type.of(["string", "list"])))
+    verify(!Utils.isParametrizedWithMongoDoc(Type.of([1d, 2d])))
+    verify(!Utils.isParametrizedWithMongoDoc(Type.of(["map": "of strings"])))
+    verify(!Utils.isParametrizedWithMongoDoc(Type.of([1f: 1d])))
+    verify(Utils.isParametrizedWithMongoDoc(Type.of(["a": TestObj {
+      string= "a"
+      decimal = 1d
+    }])))
+    verify(Utils.isParametrizedWithMongoDoc(Type.of([TestObj {
+      string = "b"
+      decimal = 2d
+    }])))
+  }
 
 }
 

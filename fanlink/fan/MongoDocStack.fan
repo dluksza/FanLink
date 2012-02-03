@@ -1,5 +1,5 @@
 
-const class MongoDocStackElement {
+internal const class MongoDocStackElement {
 
   const Str name
 
@@ -15,7 +15,7 @@ const class MongoDocStackElement {
 
 }
 
-class MongoDocStack {
+internal class MongoDocStack {
   
   private MongoDocStackElement[] stack := [,]
   

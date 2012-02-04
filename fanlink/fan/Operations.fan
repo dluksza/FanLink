@@ -3,12 +3,19 @@ using mongo
 class Operations {
 
   static Void persistObj(DB db, MongoDoc obj) {
-    stack := MongoDocStack()
-    Str:Obj? doc := [:] 
     type := Type.of(obj)
-    fields := type.fields.dup
+    doc := serialize(obj)
     collectionName := Utils.mongoDocName(type)
     
+    db.collection(collectionName).insert(doc)
+  }
+  
+  internal static Str:Obj? serialize(MongoDoc obj) {
+    doc := Str:Obj?[:]
+    type := Type.of(obj)
+    stack := MongoDocStack()
+    fields := type.fields.dup
+
     while (true) {
       if (fields.isEmpty) {
         if (!stack.isEmpty){
@@ -30,7 +37,9 @@ class Operations {
       
       fType := field.type
       value := field.get(obj)
-      if (Utils.isSimpleType(value))
+      if (Utils.isParametrizedWithMongoDoc(fType))
+        throw FanLinkSerializationErr("Serialization List's and Map's of type MongoDoc is currently unsupported")
+      else if (Utils.isSimpleType(value))
         // persist simple field
         doc.add(field.name, field.get(obj))
       else if (Utils.isComplexType(fType) && value != null) {
@@ -42,13 +51,14 @@ class Operations {
           parentObj = obj
         })
         // reset data
-        doc = [:]
+        doc = Str:Obj?[:]
         fields = field.type.fields.dup
         obj = value
       } else
         throw FanLinkSerializationErr("Cannot serialize object type ${fType} in obj ${type}")
     }
-    db.collection(collectionName).insert(doc)
+    
+    return doc
   }
   
   internal static Bool isTransient(Field field) {

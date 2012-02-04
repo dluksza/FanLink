@@ -27,8 +27,8 @@ class BaseITest : Test {
 
     // then
     map := findPersistedObj(TestObj#)
-    verify(map["decimal"] == 8.0f)
-    verify(map["string"] == "asd")
+    verifyEq(map["decimal"], 8.0f)
+    verifyEq(map["string"], "asd")
   }
 
   Void testNotPersistingTransientFields() {
@@ -43,7 +43,7 @@ class BaseITest : Test {
 
     // then
     map := findPersistedObj(TestObjWithTransient#)
-    verify(map["persistent"] == "persistent")
+    verifyEq(map["persistent"], "persistent")
     verify(!map.containsKey("transient"))
   }
 
@@ -54,12 +54,9 @@ class BaseITest : Test {
     }
 
     // when
-    try {
+    verifyErr(FanLinkSerializationErr#, |->| {
       Operations.persistObj(db, obj)
-    } catch (FanLinkSerializationErr e) {
-      return
-    }
-    fail("FanLinkSeerializationErr should be thrown")
+    })
   }
 
   Void testPersistingNestedListsAndMaps() {
@@ -76,14 +73,14 @@ class BaseITest : Test {
     map := findPersistedObj(TestObjWithListAndMap#)
     verify(map["strings"] is List)
     list := (List) map["strings"]
-    verify(list.size == 2)
-    verify(list.get(0) == "one")
-    verify(list.get(1) == "two")
-    verify(map["mapping"] is Map)
+    verifyEq(list.size, 2)
+    verifyEq(list.get(0), "one")
+    verifyEq(list.get(1), "two")
+    verifyType(map["mapping"], [Str:Obj?]#)
     mapping := (Map) map["mapping"]
-    verify(mapping.size == 2)
-    verify(mapping["one"] == "jeden")
-    verify(mapping["two"] == "dwa")
+    verifyEq(mapping.size, 2)
+    verifyEq(mapping["one"], "jeden")
+    verifyEq(mapping["two"], "dwa")
   }
 
   Void testPersistingNestedObjects() {
@@ -99,9 +96,9 @@ class BaseITest : Test {
 
     // then
     map := findPersistedObj(TestObjWithNested#)
-    verify(map["nested"] is Map)
+    verifyType(map["nested"], [Str:Obj?]#)
     nested := (Map) map["nested"]
-    verify(nested["str"] == "test")
+    verifyEq(nested["str"], "test")
   }
 
   Void testPersistingComplexNestedObjects() {
@@ -120,29 +117,30 @@ class BaseITest : Test {
 
     // then
     map := findPersistedObj(TestObjWithDoubleNesting#)
-    verify(map["nestedList"] is List)
-    nestedList := (List) map["nestedList"]
-    verify(nestedList.size == 1)
-    verify(nestedList[0] is Map)
-    listElement := (Map) nestedList[0]
-    verify(listElement.size == 2)
-    verify(listElement["nestedMap"] is Map)
-    verify(listElement["secondLevel"] is Map)
-    nestedMap := (Map) listElement["nestedMap"]
-    secondLevel := (Map) listElement["secondLevel"]
-    verify(nestedMap.size == 1)
-    verify(secondLevel.size == 1)
-    verify(nestedMap["one"] == 1f)
-    verify(secondLevel["nestedList"] is List)
-    innerList := (List) secondLevel["nestedList"]
-    verify(innerList.size == 2)
-    verify(innerList[0] == "b")
-    verify(innerList[1] == "c")
+    verifyType(map["nestedList"], Obj?[]#)
+    nestedList := (Obj?[]) map["nestedList"]
+    verifyEq(nestedList.size, 1)
+    verifyType(nestedList[0], [Str:Obj?]#)
+    listElement := (Str:Obj?) nestedList[0]
+    verifyEq(listElement.size, 2)
+    verifyType(listElement["nestedMap"], [Str:Obj?]#)
+    verifyType(listElement["secondLevel"], [Str:Obj?]#)
+    nestedMap := (Str:Obj?) listElement["nestedMap"]
+    secondLevel := (Str:Obj?) listElement["secondLevel"]
+    verifyEq(nestedMap.size, 1)
+    verifyEq(secondLevel.size, 1)
+    verifyEq(nestedMap["one"], 1f)
+    verifyType(secondLevel["nestedList"], Obj?[]#)
+    innerList := (Obj?[]) secondLevel["nestedList"]
+    verifyEq(innerList.size, 2)
+    verifyEq(innerList[0], "b")
+    verifyEq(innerList[1], "c")
   }
 
   private Str:Obj? findPersistedObj(Type type) {
     result := db.collection(Utils.mongoDocName(type)).find
-    verify(result.count == 1)
+    verifyEq(result.count, 1)
+
     return result.next
   }
 

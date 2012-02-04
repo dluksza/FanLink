@@ -10,7 +10,7 @@ class UtilsTest : Test {
     name := Utils.mongoDocName(type)
     
     // then
-    verify(name == "fanlink_UtilsTest", "${name} != fanlink_UtilsTest")
+    verifyEq(name, "fanlink_UtilsTest")
   }
   
   Void testIsMongoDocId() {
@@ -26,8 +26,8 @@ class UtilsTest : Test {
     
     // then
     verify(r1, "should be valid mongo doc id field")
-    verify(!r2, "should be invalid mongo doc id field, type shouldn't match")
-    verify(!r3, "should be invalid mongo doc id field, name shouldn't match")
+    verifyFalse(r2, "should be invalid mongo doc id field, type shouldn't match")
+    verifyFalse(r3, "should be invalid mongo doc id field, name shouldn't match")
   }
 
   Void testIsSimpleType() {
@@ -42,47 +42,47 @@ class UtilsTest : Test {
     verify(Utils.isSimpleType([:]), "Map should be simple type")
     verify(Utils.isSimpleType(Code("")), "Code should be simple type")
     verify(Utils.isSimpleType(ObjectID()), "ObjectID should be simple type")
-    verify(!Utils.isSimpleType(TestObj {
+    verifyFalse(Utils.isSimpleType(TestObj {
       string = ""
       decimal = 2d
     }))
   }
   
   Void testIsComplexType() {
-    verify(!Utils.isComplexType(Str#))
-    verify(!Utils.isComplexType(Str?#))
-    verify(!Utils.isComplexType(Int#))
-    verify(!Utils.isComplexType(Int?#))
-    verify(!Utils.isComplexType(Float#))
-    verify(!Utils.isComplexType(Float?#))
-    verify(!Utils.isComplexType(Decimal#))
-    verify(!Utils.isComplexType(Decimal?#))
-    verify(!Utils.isComplexType(Date#))
-    verify(!Utils.isComplexType(Date?#))
-    verify(!Utils.isComplexType(Buf#))
-    verify(!Utils.isComplexType(Buf?#))
-    verify(!Utils.isComplexType(List#))
-    verify(!Utils.isComplexType(List?#))
-    verify(!Utils.isComplexType(Bool#))
-    verify(!Utils.isComplexType(Bool?#))
-    verify(!Utils.isComplexType(Code#)) 
-    verify(!Utils.isComplexType(Code?#)) 
-    verify(!Utils.isComplexType(ObjectID#))
-    verify(!Utils.isComplexType(ObjectID?#))
-    verify(!Utils.isComplexType(Map?#))
-    verify(!Utils.isComplexType(Map#))
-    verify(!Utils.isComplexType(Obj#))
-    verify(!Utils.isComplexType(Obj?#))
+    verifyFalse(Utils.isComplexType(Str#))
+    verifyFalse(Utils.isComplexType(Str?#))
+    verifyFalse(Utils.isComplexType(Int#))
+    verifyFalse(Utils.isComplexType(Int?#))
+    verifyFalse(Utils.isComplexType(Float#))
+    verifyFalse(Utils.isComplexType(Float?#))
+    verifyFalse(Utils.isComplexType(Decimal#))
+    verifyFalse(Utils.isComplexType(Decimal?#))
+    verifyFalse(Utils.isComplexType(Date#))
+    verifyFalse(Utils.isComplexType(Date?#))
+    verifyFalse(Utils.isComplexType(Buf#))
+    verifyFalse(Utils.isComplexType(Buf?#))
+    verifyFalse(Utils.isComplexType(List#))
+    verifyFalse(Utils.isComplexType(List?#))
+    verifyFalse(Utils.isComplexType(Bool#))
+    verifyFalse(Utils.isComplexType(Bool?#))
+    verifyFalse(Utils.isComplexType(Code#)) 
+    verifyFalse(Utils.isComplexType(Code?#)) 
+    verifyFalse(Utils.isComplexType(ObjectID#))
+    verifyFalse(Utils.isComplexType(ObjectID?#))
+    verifyFalse(Utils.isComplexType(Map?#))
+    verifyFalse(Utils.isComplexType(Map#))
+    verifyFalse(Utils.isComplexType(Obj#))
+    verifyFalse(Utils.isComplexType(Obj?#))
     verify(Utils.isComplexType(TestObj#))
     verify(Utils.isComplexType(TestObj?#))
   }
   
   Void testIsParametrizedWithMongoDoc() {
-    verify(!Utils.isParametrizedWithMongoDoc(Str#))
-    verify(!Utils.isParametrizedWithMongoDoc(Type.of(["string", "list"])))
-    verify(!Utils.isParametrizedWithMongoDoc(Type.of([1d, 2d])))
-    verify(!Utils.isParametrizedWithMongoDoc(Type.of(["map": "of strings"])))
-    verify(!Utils.isParametrizedWithMongoDoc(Type.of([1f: 1d])))
+    verifyFalse(Utils.isParametrizedWithMongoDoc(Str#))
+    verifyFalse(Utils.isParametrizedWithMongoDoc(Type.of(["string", "list"])))
+    verifyFalse(Utils.isParametrizedWithMongoDoc(Type.of([1d, 2d])))
+    verifyFalse(Utils.isParametrizedWithMongoDoc(Type.of(["map": "of strings"])))
+    verifyFalse(Utils.isParametrizedWithMongoDoc(Type.of([1f: 1d])))
     verify(Utils.isParametrizedWithMongoDoc(Type.of(["a": TestObj {
       string= "a"
       decimal = 1d

@@ -52,12 +52,9 @@ class OperationsTest : Test {
     }
 
     // when
-    try {
-      resutl := Operations.serialize(obj)
-    } catch (FanLinkSerializationErr e) {
-      return
-    }
-    fail("Should thrown ${FanLinkSerializationErr#}")
+    verifyErr(FanLinkSerializationErr#, |->| {
+      Operations.serialize(obj)
+    })
   }
 
   Void testSerializeNestedListAndMaps() {

@@ -91,7 +91,7 @@ class OperationsTest : Test {
     verify(result == map, "${result} != ${map}")
   }
 
-  Void testSerizlizeComplexNestedObj() {
+  Void testSerializeComplexNestedObj() {
     // given
     obj := TestObjWithDoubleNesting {
       nestedList = [FirstLevelNestedObj {

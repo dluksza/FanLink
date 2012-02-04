@@ -21,10 +21,10 @@ class BaseITest : Test {
       string = "asd"
       decimal = 8d
     }
-    
+
     // when
     Operations.persistObj(db, obj)
-    
+
     // then
     map := findPersistedObj(TestObj#)
     verify(map["decimal"] == 8.0f)
@@ -61,17 +61,17 @@ class BaseITest : Test {
     }
     fail("FanLinkSeerializationErr should be thrown")
   }
-  
+
   Void testPersistingNestedListsAndMaps() {
     // given
     obj := TestObjWithListAndMap {
       strings = ["one", "two"]
       mapping = ["one": "jeden", "two": "dwa"]
     }
-    
+
     // when
     Operations.persistObj(db, obj)
-    
+
     // then
     map := findPersistedObj(TestObjWithListAndMap#)
     verify(map["strings"] is List)
@@ -104,10 +104,46 @@ class BaseITest : Test {
     verify(nested["str"] == "test")
   }
 
+  Void testPersistingComplexNestedObjects() {
+    // given
+    obj := TestObjWithDoubleNesting {
+      nestedList = [FirstLevelNestedObj {
+        nestedMap = ["one": 1d]
+        secondLevel = SecondLevelNestedObj {
+          nestedList = ["b", "c"]
+        }
+      }]
+    }
+
+    // when
+    Operations.persistObj(db, obj)
+
+    // then
+    map := findPersistedObj(TestObjWithDoubleNesting#)
+    verify(map["nestedList"] is List)
+    nestedList := (List) map["nestedList"]
+    verify(nestedList.size == 1)
+    verify(nestedList[0] is Map)
+    listElement := (Map) nestedList[0]
+    verify(listElement.size == 2)
+    verify(listElement["nestedMap"] is Map)
+    verify(listElement["secondLevel"] is Map)
+    nestedMap := (Map) listElement["nestedMap"]
+    secondLevel := (Map) listElement["secondLevel"]
+    verify(nestedMap.size == 1)
+    verify(secondLevel.size == 1)
+    verify(nestedMap["one"] == 1f)
+    verify(secondLevel["nestedList"] is List)
+    innerList := (List) secondLevel["nestedList"]
+    verify(innerList.size == 2)
+    verify(innerList[0] == "b")
+    verify(innerList[1] == "c")
+  }
+
   private Str:Obj? findPersistedObj(Type type) {
     result := db.collection(Utils.mongoDocName(type)).find
     verify(result.count == 1)
     return result.next
   }
-  
+
 }

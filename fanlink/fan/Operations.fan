@@ -6,10 +6,10 @@ class Operations {
     type := Type.of(obj)
     doc := serialize(obj)
     collectionName := Utils.mongoDocName(type)
-    
+
     db.collection(collectionName).insert(doc)
   }
-  
+
   internal static Str:Obj? serialize(MongoDoc obj) {
     doc := Str:Obj?[:]
     type := Type.of(obj)
@@ -18,7 +18,7 @@ class Operations {
 
     while (true) {
       if (fields.isEmpty) {
-        if (!stack.isEmpty){
+        if (!stack.isEmpty) {
           // restore from stack
           element := stack.pop
           fields = element.parentFields.dup
@@ -34,11 +34,16 @@ class Operations {
       // don't persist transient and id fields
       if (isTransient(field) || Utils.isMongoDocId(field))
         continue
-      
+
       fType := field.type
       value := field.get(obj)
       if (Utils.isParametrizedWithMongoDoc(fType))
-        throw FanLinkSerializationErr("Serialization List's and Map's of type MongoDoc is currently unsupported")
+        if (fType.fits(Map#))
+          doc[field.name] = serializeMongoDocMap(value)
+        else if (fType.fits(List#))
+          doc[field.name] = serializeMongoDocList(value)
+        else
+          throw FanLinkSerializationErr("Unsupported parameterized type: ${fType}")
       else if (Utils.isSimpleType(value))
         // persist simple field
         doc.add(field.name, field.get(obj))
@@ -57,12 +62,30 @@ class Operations {
       } else
         throw FanLinkSerializationErr("Cannot serialize object type ${fType} in obj ${type}")
     }
-    
+
     return doc
   }
-  
+
   internal static Bool isTransient(Field field) {
     return field.hasFacet(Transient#)
+  }
+
+  private static Str:Obj? serializeMongoDocMap(Map map) {
+    result := Str:Obj?[:]
+    map.each |mapValue, key| {
+      result[key] = serialize(mapValue)
+    }
+
+    return result
+  }
+
+  private static [Str:Obj?][] serializeMongoDocList(List list) {
+    result := Str:Obj?[,]
+    list.each |listValue| {
+      result.add(serialize(listValue))
+    }
+
+    return result
   }
 
 }

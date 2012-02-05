@@ -70,21 +70,19 @@ class Operations {
     fieldsMap := Field:Obj?[:]
     Str? key := null
     Obj? value := null
-    fieldStack := Field[,]
-    mapStack := Str:Obj?[,]
-    typeStack := Type[,]
-    fieldsMapStack := Field:Obj?[,]
+    stack := DeserializeStack()
     while (true) {
       if (!map.isEmpty) {
         key = map.keys.peek
         value = map.remove(key)
       } else {
-        if (!mapStack.isEmpty) {
+        if (!stack.isEmpty) {
           obj := createObj(type, fieldsMap)
-          field := fieldStack.pop
-          type = typeStack.pop
-          map = mapStack.pop.dup
-          fieldsMap = fieldsMapStack.pop.dup.add(field, obj)
+          element := stack.pop
+          type = element.type
+          map = element.map.dup
+          field := element.field
+          fieldsMap = element.fieldsMap.dup.add(field, obj)
           continue
         } else
           break
@@ -94,10 +92,12 @@ class Operations {
       if (Utils.isSimpleType(field.type))
         fieldsMap[field] = value.toImmutable
       else if (Utils.isComplexType(field.type)) {
-        mapStack.add(map)
-        typeStack.add(type)
-        fieldStack.add(field)
-        fieldsMapStack.add(fieldsMap)
+        stack.put(DeserializeStackElement {
+          it.map = map
+          it.type = type
+          it.field = field
+          it.fieldsMap = fieldsMap
+        })
         map = value
         fieldsMap = [:]
         type = field.type

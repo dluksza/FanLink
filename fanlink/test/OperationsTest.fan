@@ -170,4 +170,23 @@ class OperationsTest : Test {
     verifyEq(obj.nested.str, "test")
   }
 
+  Void testDeserializeComplexNestedObj() {
+    // given
+    map := Str:Obj?["nestedList": [Str:Obj?[
+        "nestedMap": Str:Decimal["one": 1d],
+        "secondLevel": Str:Obj?["nestedList": Str["b", "c"]]
+     ]]]
+
+    // when
+    result := Operations.deserialize(map, TestObjWithDoubleNesting#)
+
+    // then
+    verifyType(result, TestObjWithDoubleNesting#)
+    obj := (TestObjWithDoubleNesting) result
+    verifyEq(obj.nestedList.size, 1)
+    nested := obj.nestedList[0]
+    verifyEq(nested.nestedMap, ["one": 1d])
+    verifyEq(nested.secondLevel.nestedList, ["b", "c"])
+  }
+
 }

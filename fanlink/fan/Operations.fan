@@ -67,14 +67,44 @@ class Operations {
   }
 
   internal static MongoDoc deserialize(Str:Obj? map, Type type) {
-    fields := Field:Obj?[:]
-    map.each |value, key| {
-      fields[type.field(key)] = value.toImmutable
+    fieldsMap := Field:Obj?[:]
+    Str? key := null
+    Obj? value := null
+    fieldStack := Field[,]
+    mapStack := Str:Obj?[,]
+    typeStack := Type[,]
+    fieldsMapStack := Field:Obj?[,]
+    while (true) {
+      if (!map.isEmpty) {
+        key = map.keys.peek
+        value = map.remove(key)
+      } else {
+        if (!mapStack.isEmpty) {
+          obj := createObj(type, fieldsMap)
+          field := fieldStack.pop
+          type = typeStack.pop
+          map = mapStack.pop.dup
+          fieldsMap = fieldsMapStack.pop.dup.add(field, obj)
+          continue
+        } else
+          break
+      }
+      
+      field := type.field(key)
+      if (Utils.isSimpleType(field.type))
+        fieldsMap[field] = value.toImmutable
+      else if (Utils.isComplexType(field.type)) {
+        mapStack.add(map)
+        typeStack.add(type)
+        fieldStack.add(field)
+        fieldsMapStack.add(fieldsMap)
+        map = value
+        fieldsMap = [:]
+        type = field.type
+      }
     }
-    setFunc := Field.makeSetFunc(fields)
-    result := type.make([ setFunc ])
 
-    return result
+    return createObj(type, fieldsMap)
   }
 
   internal static Bool isTransient(Field field) {
@@ -97,6 +127,13 @@ class Operations {
     }
 
     return result
+  }
+  
+  private static MongoDoc createObj(Type type, Field:Obj? fields) {
+    setFunc := Field.makeSetFunc(fields)
+    obj := type.make([ setFunc ])
+    
+    return obj
   }
 
 }

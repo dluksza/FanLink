@@ -157,4 +157,17 @@ class OperationsTest : Test {
     verifyEq(obj.mapping, ["one": "jeden", "two": "dwa"])
   }
 
+  Void testDeserializeNesteObjects() {
+    // given
+    map := Str:Obj?["nested": Str:Obj?["str": "test"]]
+
+    // when
+    result := Operations.deserialize(map, TestObjWithNested#)
+    
+    // then
+    verifyType(result, TestObjWithNested#)
+    obj := (TestObjWithNested) result
+    verifyEq(obj.nested.str, "test")
+  }
+
 }

@@ -1,11 +1,11 @@
 
-class MongoDocStackTest : Test {
+class SerializeStackTest : Test {
 
   Void test() {
-    stack := MongoDocStack()
+    stack := SerializeStack()
     verify(stack.isEmpty)
 
-    element1 := MongoDocStackElement {
+    element1 := SerializeStackElement {
       name = "first element"
       parentFields = [,]
       parentMap = [:]
@@ -17,13 +17,13 @@ class MongoDocStackTest : Test {
     verifyEq(stack.pop, element1)
     verify(stack.isEmpty)
 
-    element2 := MongoDocStackElement {
+    element2 := SerializeStackElement {
       name = "second element"
       parentFields = [,]
       parentMap = [:]
       parentObj = it
     }
-    element3 := MongoDocStackElement {
+    element3 := SerializeStackElement {
       name = "third element"
       parentFields = [,]
       parentMap = [:]

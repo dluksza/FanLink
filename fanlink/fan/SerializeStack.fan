@@ -1,5 +1,5 @@
 
-internal const class MongoDocStackElement {
+internal const class SerializeStackElement {
 
   const Str name
 
@@ -15,15 +15,15 @@ internal const class MongoDocStackElement {
 
 }
 
-internal class MongoDocStack {
+internal class SerializeStack {
   
-  private MongoDocStackElement[] stack := [,]
+  private SerializeStackElement[] stack := [,]
   
-  MongoDocStackElement? pop() {
+  SerializeStackElement? pop() {
     stack.pop
   }
   
-  Void put(MongoDocStackElement element) {
+  Void put(SerializeStackElement element) {
     stack.add(element)
   }
   

@@ -13,7 +13,7 @@ class Operations {
   internal static Str:Obj? serialize(MongoDoc obj) {
     doc := Str:Obj?[:]
     type := Type.of(obj)
-    stack := MongoDocStack()
+    stack := SerializeStack()
     fields := type.fields.dup
 
     while (true) {
@@ -49,7 +49,7 @@ class Operations {
         doc.add(field.name, field.get(obj))
       else if (Utils.isComplexType(fType) && value != null) {
         // put current data on stack
-        stack.put(MongoDocStackElement {
+        stack.put(SerializeStackElement {
           name = field.name
           parentFields = fields
           parentMap = doc

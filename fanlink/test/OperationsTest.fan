@@ -113,4 +113,48 @@ class OperationsTest : Test {
     verify(result == map, "${result} != ${map}")
   }
 
+  Void testDeserializeSimpleObj() {
+    // given
+    map := Str:Obj?["string": "str", "decimal": 8d]
+
+    // when
+    result := Operations.deserialize(map, TestObj#)
+
+    // then
+    verifyType(result, TestObj#)
+    obj := (TestObj) result
+    verifyEq(obj.decimal, 8d)
+    verifyEq(obj.string, "str")
+  }
+
+  Void testdeserializeTransienFields() {
+    // given
+    map := Str:Obj?["persistent": "persistent"]
+
+    // when
+    result := Operations.deserialize(map, TestObjWithTransient#)
+
+    // then
+    verifyType(result, TestObjWithTransient#)
+    obj := (TestObjWithTransient) result
+    verifyEq(obj.persistent, "persistent")
+  }
+
+  Void testDeserializeNestedListAndMaps() {
+    // given
+    map := Str:Obj?[
+      "strings": Str["one", "two"],
+      "mapping": Str:Str["one": "jeden", "two": "dwa"]
+    ]
+
+    // when
+    result := Operations.deserialize(map, TestObjWithListAndMap#)
+
+    // then
+    verifyType(result, TestObjWithListAndMap#)
+    obj := (TestObjWithListAndMap) result
+    verifyEq(obj.strings, ["one", "two"])
+    verifyEq(obj.mapping, ["one": "jeden", "two": "dwa"])
+  }
+
 }

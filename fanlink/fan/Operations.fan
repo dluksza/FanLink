@@ -66,6 +66,17 @@ class Operations {
     return doc
   }
 
+  internal static MongoDoc deserialize(Str:Obj? map, Type type) {
+    fields := Field:Obj?[:]
+    map.each |value, key| {
+      fields[type.field(key)] = value.toImmutable
+    }
+    setFunc := Field.makeSetFunc(fields)
+    result := type.make([ setFunc ])
+
+    return result
+  }
+
   internal static Bool isTransient(Field field) {
     return field.hasFacet(Transient#)
   }

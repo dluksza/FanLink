@@ -3,7 +3,7 @@ using mongo
 const class TestObjWithTransient : MongoDoc {
   
   @Transient
-  const Str transient
+  const Str? transient
   
   const Str persistent
   

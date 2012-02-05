@@ -44,7 +44,7 @@ class Operations {
           doc[field.name] = serializeMongoDocList(value)
         else
           throw FanLinkSerializationErr("Unsupported parameterized type: ${fType}")
-      else if (Utils.isSimpleType(value))
+      else if (Utils.isSimpleType(fType))
         // persist simple field
         doc.add(field.name, field.get(obj))
       else if (Utils.isComplexType(fType) && value != null) {

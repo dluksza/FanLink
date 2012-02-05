@@ -31,21 +31,34 @@ class UtilsTest : Test {
   }
 
   Void testIsSimpleType() {
-    verify(Utils.isSimpleType("string"), "Str should be simple type")
-    verify(Utils.isSimpleType(1), "Int should be simple type")
-    verify(Utils.isSimpleType(1.0f), "Float should be simple type")
-    verify(Utils.isSimpleType(0.1d), "Decimal should be simple type")
-    verify(Utils.isSimpleType(Date.today), "Date should be simple type")
-    verify(Utils.isSimpleType(Buf()), "Buf should be simple type")
-    verify(Utils.isSimpleType([,]), "List should be simple type")
-    verify(Utils.isSimpleType(false), "Bool should be simple type")
-    verify(Utils.isSimpleType([:]), "Map should be simple type")
-    verify(Utils.isSimpleType(Code("")), "Code should be simple type")
-    verify(Utils.isSimpleType(ObjectID()), "ObjectID should be simple type")
-    verifyFalse(Utils.isSimpleType(TestObj {
-      string = ""
-      decimal = 2d
-    }))
+    verify(Utils.isSimpleType(Str#))
+    verify(Utils.isSimpleType(Str?#))
+    verify(Utils.isSimpleType(Int#))
+    verify(Utils.isSimpleType(Int?#))
+    verify(Utils.isSimpleType(Float#))
+    verify(Utils.isSimpleType(Float?#))
+    verify(Utils.isSimpleType(Decimal#))
+    verify(Utils.isSimpleType(Decimal?#))
+    verify(Utils.isSimpleType(Date#))
+    verify(Utils.isSimpleType(Date?#))
+    verify(Utils.isSimpleType(Buf#))
+    verify(Utils.isSimpleType(Buf?#))
+    verify(Utils.isSimpleType(List#))
+    verify(Utils.isSimpleType(List?#))
+    verify(Utils.isSimpleType(Bool#))
+    verify(Utils.isSimpleType(Bool?#))
+    verify(Utils.isSimpleType(Map#))
+    verify(Utils.isSimpleType(Map?#))
+    verify(Utils.isSimpleType(Code#))
+    verify(Utils.isSimpleType(Code?#))
+    verify(Utils.isSimpleType(ObjectID#))
+    verify(Utils.isSimpleType(ObjectID?#))
+    verifyFalse(Utils.isSimpleType(Obj#))
+    verifyFalse(Utils.isSimpleType(Obj?#))
+    verifyFalse(Utils.isSimpleType(MongoDoc#))
+    verifyFalse(Utils.isSimpleType(MongoDoc?#))
+    verifyFalse(Utils.isSimpleType(TestObj#))
+    verifyFalse(Utils.isSimpleType(TestObj?#))
   }
   
   Void testIsComplexType() {

@@ -17,11 +17,14 @@ internal final class Utils {
     return type.mixins.contains(MongoDoc#)
   }
   
-  static Bool isSimpleType(Obj obj) {
-    return obj is Str || obj is Int || obj is Float ||
-            obj is Decimal || obj is Date || obj is Buf ||
-            obj is List || obj is Bool || obj is Map ||
-            obj is Code || obj is ObjectID;
+  static Bool isSimpleType(Type type) {
+    nonNullable := type.toNonNullable
+    return nonNullable.fits(Str#) || nonNullable.fits(Int#) ||
+            nonNullable.fits(Float#) || nonNullable.fits(Decimal#) ||
+            nonNullable.fits(Date#) || nonNullable.fits(Buf#) ||
+            nonNullable.fits(List#) || nonNullable.fits(Bool#) ||
+            nonNullable.fits(Map#) || nonNullable.fits(Code#) ||
+            nonNullable.fits(ObjectID#);
   }
   
   static Bool isParametrizedWithMongoDoc(Type type) {

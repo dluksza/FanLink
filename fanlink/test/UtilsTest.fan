@@ -105,6 +105,12 @@ class UtilsTest : Test {
       decimal = 2d
     }])))
   }
+  
+  Void testGetParameterType() {
+    verifyNull(Utils.getParameterType(Str#))
+    verifyEq(Utils.getParameterType(Type.of(Str[,])), Str#)
+    verifyEq(Utils.getParameterType(Type.of(Str:Decimal[:])), Decimal#)
+  }
 
 }
 

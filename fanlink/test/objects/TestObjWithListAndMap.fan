@@ -6,7 +6,7 @@ const class TestObjWithListAndMap : MongoDoc {
   
   const Str:Str mapping
   
-  override const ObjectID? id
+  override const ObjectID? _id
   
   new make(|This f| f){
     f(this)

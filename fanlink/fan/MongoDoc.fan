@@ -2,6 +2,6 @@ using mongo
 
 mixin MongoDoc {
   
-  virtual ObjectID? id() { return null }
+  virtual ObjectID? _id() { return null }
 
 }

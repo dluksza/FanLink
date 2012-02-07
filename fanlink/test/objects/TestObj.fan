@@ -6,7 +6,7 @@ const class TestObj : MongoDoc {
 
   const Decimal decimal
   
-  override const ObjectID? id
+  override const ObjectID? _id
   
   new make(|This f| f) {
     f(this)

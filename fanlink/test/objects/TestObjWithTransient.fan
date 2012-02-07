@@ -7,7 +7,7 @@ const class TestObjWithTransient : MongoDoc {
   
   const Str persistent
   
-  override const ObjectID? id
+  override const ObjectID? _id
   
   new make(|This f| f) {
     f(this)

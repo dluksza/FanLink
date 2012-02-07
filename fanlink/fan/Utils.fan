@@ -10,7 +10,7 @@ internal final class Utils {
 
   static Bool isMongoDocId(Field field) {
     nonNullable := field.type.toNonNullable
-    return nonNullable == ObjectID# && field.name == "id"
+    return nonNullable == ObjectID# && field.name == "_id"
   }
 
   static Bool isComplexType(Type type) {

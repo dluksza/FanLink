@@ -115,7 +115,7 @@ class UtilsTest : Test {
 }
 
 class ValidMongoDocId {
-  ObjectID id := ObjectID()
+  ObjectID? _id := ObjectID()
 }
 
 class InvalidMongoDocId {

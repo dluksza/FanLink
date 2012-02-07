@@ -137,6 +137,84 @@ class BaseITest : Test {
     verifyEq(innerList[1], "c")
   }
 
+  Void testShouldStoreAndRestoreDocument() {
+    // given
+    obj := TestObj {
+      string = "test string"
+      decimal = 11d
+    }
+    
+    // when
+    Operations.persistObj(db, obj)
+    result := Operations.find(db, TestObj#)
+    
+    // then
+    findPersistedObj(TestObj#)
+    verifyNull(obj._id)
+    verifyEq(result.size, 1)
+    verifyNotNull(result[0]._id)
+    verifyType(result[0], TestObj#)
+    resultObj := (TestObj) result[0]
+    verifyEq(resultObj.string, "test string")
+    verifyEq(resultObj.decimal, 11d)
+  }
+  
+  Void testShouldStoreAndRestoreMultipleDocuments() {
+    // given
+    count := 27
+    obj := TestObj[,]
+    for (i := 0; i < count; i++)
+      obj.add(TestObj {
+        string = "test ${i}"
+        decimal = i.toDecimal
+      })
+    
+    // when
+    obj.each |o| {
+      Operations.persistObj(db, o)
+    }
+    result := Operations.find(db, TestObj#)
+    
+    // then
+    verifyEq(result.size, 27)
+    for (i := 0; i < count; i++) {
+      r := result[i]
+      verifyType(r, TestObj#)
+      t := (TestObj) r
+      verifyEq(t.string, "test ${i}")
+      verifyEq(t.decimal, i.toDecimal)
+    }
+  }
+  
+  Void testShouldStoreAndRestoreComplexNestedObjects() {
+    // given
+    obj := TestObjWithDoubleNesting {
+      nestedList = [FirstLevelNestedObj {
+        nestedMap = ["one": 1d]
+        secondLevel = SecondLevelNestedObj {
+          nestedList = ["b", "c"]
+        }
+      }]
+    }
+
+    // when
+    Operations.persistObj(db, obj)
+    result := Operations.find(db, TestObjWithDoubleNesting#)
+
+    // then
+    findPersistedObj(TestObjWithDoubleNesting#)
+    verifyEq(result.size, 1)
+    verifyNotNull(result[0]._id)
+    verifyType(result[0], TestObjWithDoubleNesting#)
+    r := (TestObjWithDoubleNesting) result[0]
+    verifyEq(r.nestedList.size, 1)
+    verifyEq(r.nestedList[0].nestedMap.size, 1)
+    verifyEq(r.nestedList[0].nestedMap["one"], 1d)
+    verifyEq(r.nestedList[0].secondLevel.nestedList.size, 2)
+    verifyEq(r.nestedList[0].secondLevel.nestedList[0], "b")
+    verifyEq(r.nestedList[0].secondLevel.nestedList[1], "c")
+  }
+
   private Str:Obj? findPersistedObj(Type type) {
     result := db.collection(Utils.mongoDocName(type)).find
     verifyEq(result.count, 1)

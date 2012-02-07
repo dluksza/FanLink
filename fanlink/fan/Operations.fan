@@ -9,6 +9,17 @@ class Operations {
 
     db.collection(collectionName).insert(doc)
   }
+  
+  static MongoDoc[] find(DB db, Type type) {
+    collectionName := Utils.mongoDocName(type)
+    collections := db.collection(collectionName).find
+    result := MongoDoc[,]
+    collections.each |element| { 
+      result.add(deserialize(element, type))
+    }
+    
+    return result.toImmutable
+  }
 
   internal static Str:Obj? serialize(MongoDoc obj) {
     doc := Str:Obj?[:]
@@ -100,7 +111,7 @@ class Operations {
         else
           throw FanLinkDeserializationErr("Unknown parameterized type: ${fType}")
       } else if (Utils.isSimpleType(fType))
-        fieldsMap[field] = value.toImmutable
+        fieldsMap[field] = getSimpleValue(field.type, value)
       else if (Utils.isComplexType(fType)) {
         stack.put(DeserializeStackElement {
           it.map = map
@@ -137,6 +148,41 @@ class Operations {
     }
 
     return result
+  }
+  
+  private static Obj? getSimpleValue(Type type, Obj? value) {
+    if (value == null)
+      return null
+    
+    type = type.toImmutable
+    if (value is Num) {
+      numValue := (Num) value
+      if (type.fits(Decimal#))
+        return numValue.toDecimal.toImmutable
+      else if (type.fits(Float#))
+        return numValue.toFloat.toImmutable
+      else if (type.fits(Int#))
+        return numValue.toInt.toImmutable
+    } else if (type.fits(List#)) { // value should also be List
+      list := (List) value
+      parameter := Utils.getParameterType(type)
+      result := List(parameter, list.size)
+      list.each |e| {
+        result.add(getSimpleValue(parameter, e))
+      } 
+
+      return result.toImmutable
+    } else if (type.fits(Map#)) { // value should also be map
+      result := Map(type)
+      parameter := Utils.getParameterType(type)
+      ((Map) value).each |v, key|{
+        result[key] = getSimpleValue(parameter, v)
+      }
+
+      return result.toImmutable
+    }
+   
+    return value.toImmutable
   }
 
   private static MongoDoc createObj(Type type, Field:Obj? fields) {

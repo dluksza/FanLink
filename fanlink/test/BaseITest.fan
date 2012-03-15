@@ -146,7 +146,7 @@ class BaseITest : Test {
     
     // when
     Operations.persistObj(db, obj)
-    result := Operations.find(db, TestObj#)
+    result := Operations.findAll(db, TestObj#)
     
     // then
     findPersistedObj(TestObj#)
@@ -173,7 +173,7 @@ class BaseITest : Test {
     obj.each |o| {
       Operations.persistObj(db, o)
     }
-    result := Operations.find(db, TestObj#)
+    result := Operations.findAll(db, TestObj#)
     
     // then
     verifyEq(result.size, 27)
@@ -199,7 +199,7 @@ class BaseITest : Test {
 
     // when
     Operations.persistObj(db, obj)
-    result := Operations.find(db, TestObjWithDoubleNesting#)
+    result := Operations.findAll(db, TestObjWithDoubleNesting#)
 
     // then
     findPersistedObj(TestObjWithDoubleNesting#)
@@ -208,12 +208,15 @@ class BaseITest : Test {
     verifyType(result[0], TestObjWithDoubleNesting#)
     r := (TestObjWithDoubleNesting) result[0]
     verifyEq(r.nestedList.size, 1)
+    verifyType(r.nestedList[0], FirstLevelNestedObj#)
     verifyEq(r.nestedList[0].nestedMap.size, 1)
     verifyEq(r.nestedList[0].nestedMap["one"], 1d)
+    verifyType(r.nestedList[0].secondLevel, SecondLevelNestedObj#)
     verifyEq(r.nestedList[0].secondLevel.nestedList.size, 2)
     verifyEq(r.nestedList[0].secondLevel.nestedList[0], "b")
     verifyEq(r.nestedList[0].secondLevel.nestedList[1], "c")
   }
+
 
   private Str:Obj? findPersistedObj(Type type) {
     result := db.collection(Utils.mongoDocName(type)).find

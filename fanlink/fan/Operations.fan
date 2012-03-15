@@ -10,7 +10,7 @@ class Operations {
     db.collection(collectionName).insert(doc)
   }
   
-  static MongoDoc[] find(DB db, Type type) {
+  static MongoDoc[] findAll(DB db, Type type) {
     collectionName := Utils.mongoDocName(type)
     collections := db.collection(collectionName).find
     result := MongoDoc[,]

@@ -20,6 +20,12 @@ class Operations {
     
     return result.toImmutable
   }
+  
+  static MongoDoc findOne(DB db, Type type) {
+    collectionName := Utils.mongoDocName(type)
+    collection := db.collection(collectionName).findOne
+    return deserialize(collection, type)
+  }
 
   internal static Str:Obj? serialize(MongoDoc obj) {
     doc := Str:Obj?[:]

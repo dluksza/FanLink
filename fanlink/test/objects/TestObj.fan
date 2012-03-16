@@ -2,9 +2,9 @@ using mongo
 
 const class TestObj : MongoDoc {
 
-  const Str string
+  const Str? string
 
-  const Decimal decimal
+  const Decimal? decimal
   
   override const ObjectID? _id
   

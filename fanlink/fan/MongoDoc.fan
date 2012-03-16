@@ -1,6 +1,6 @@
 using mongo
 
-mixin MongoDoc {
+const mixin MongoDoc {
   
   virtual ObjectID? _id() { return null }
 

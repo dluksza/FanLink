@@ -17,7 +17,7 @@ class Operations {
     collections.each |element| { 
       result.add(deserialize(element, type))
     }
-    
+
     return result.toImmutable
   }
   
@@ -25,6 +25,23 @@ class Operations {
     collectionName := Utils.mongoDocName(type)
     collection := db.collection(collectionName).findOne
     return deserialize(collection, type)
+  }
+  
+  static MongoDoc[] find(DB db, FindFilter filter, FindOpts opts:= FindOpts {}) {
+    type := filter.filter.typeof
+    filterMap := serialize(filter.filter)
+    options := FindOpts.convertToMap(opts)
+    collectionName := Utils.mongoDocName(type)
+    filterMap = filterMap.exclude |value, key| {
+      !filter.fieldNames.contains(key)
+    }
+    collections := db.collection(collectionName).find(filterMap, options)
+    result := MongoDoc[,]
+    collections.each |element| { 
+      result.add(deserialize(element, type))
+    }
+    
+    return result.toImmutable
   }
 
   internal static Str:Obj? serialize(MongoDoc obj) {

@@ -1,11 +1,11 @@
-class OperationsTest : Test {
+class DeserializerTest : Test {
 
   Void testDeserializeSimpleObj() {
     // given
     map := Str:Obj?["string": "str", "decimal": 8d]
 
     // when
-    result := Operations.deserialize(map, TestObj#)
+    result := Deserializer.deserialize(map, TestObj#)
 
     // then
     verifyType(result, TestObj#)
@@ -19,7 +19,7 @@ class OperationsTest : Test {
     map := Str:Obj?["persistent": "persistent"]
 
     // when
-    result := Operations.deserialize(map, TestObjWithTransient#)
+    result := Deserializer.deserialize(map, TestObjWithTransient#)
 
     // then
     verifyType(result, TestObjWithTransient#)
@@ -35,7 +35,7 @@ class OperationsTest : Test {
     ]
 
     // when
-    result := Operations.deserialize(map, TestObjWithListAndMap#)
+    result := Deserializer.deserialize(map, TestObjWithListAndMap#)
 
     // then
     verifyType(result, TestObjWithListAndMap#)
@@ -49,8 +49,8 @@ class OperationsTest : Test {
     map := Str:Obj?["nested": Str:Str["str": "test"]]
 
     // when
-    result := Operations.deserialize(map, TestObjWithNested#)
-    
+    result := Deserializer.deserialize(map, TestObjWithNested#)
+
     // then
     verifyType(result, TestObjWithNested#)
     obj := (TestObjWithNested) result
@@ -65,7 +65,7 @@ class OperationsTest : Test {
      ]]]
 
     // when
-    result := Operations.deserialize(map, TestObjWithDoubleNesting#)
+    result := Deserializer.deserialize(map, TestObjWithDoubleNesting#)
 
     // then
     verifyType(result, TestObjWithDoubleNesting#)

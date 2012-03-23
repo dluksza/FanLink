@@ -8,7 +8,7 @@ class OperationsTestsFindAll : BaseITest {
     }
     
     // when
-    Operations.persistObj(db, obj)
+    Operations.insert(db, obj)
     result := Operations.findAll(db, TestObj#)
     
     // then
@@ -34,7 +34,7 @@ class OperationsTestsFindAll : BaseITest {
     
     // when
     obj.each |o| {
-      Operations.persistObj(db, o)
+      Operations.insert(db, o)
     }
     result := Operations.findAll(db, TestObj#)
     
@@ -61,7 +61,7 @@ class OperationsTestsFindAll : BaseITest {
     }
 
     // when
-    Operations.persistObj(db, obj)
+    Operations.insert(db, obj)
     result := Operations.findAll(db, TestObjWithDoubleNesting#)
 
     // then

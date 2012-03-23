@@ -50,7 +50,7 @@ class OperationsTestsFind : BaseITest {
     }
 
     // when
-    Operations.persistObj(db, obj)
+    Operations.insert(db, obj)
     result1 := Operations.find(db, filter1)
 
     // then
@@ -83,7 +83,7 @@ class OperationsTestsFind : BaseITest {
     }
 
   	// when
-    Operations.persistObj(db, obj)
+    Operations.insert(db, obj)
     result := Operations.find(db, filter)
   
   	// then
@@ -111,7 +111,7 @@ class OperationsTestsFind : BaseITest {
     }
 
   	// when
-    Operations.persistObj(db, obj)
+    Operations.insert(db, obj)
     result := Operations.find(db, filter, FindOpts { limit = 2 })
 
   	// then
@@ -144,7 +144,7 @@ class OperationsTestsFind : BaseITest {
     }
 
     // when
-    Operations.persistObj(db, obj)
+    Operations.insert(db, obj)
     result := Operations.find(db, filter, FindOpts { skip = 1 })
 
     // then
@@ -177,7 +177,7 @@ class OperationsTestsFind : BaseITest {
     }
 
     // when
-    Operations.persistObj(db, obj)
+    Operations.insert(db, obj)
     result := Operations.find(db, filter, FindOpts { fields = ["string"] })
 
     // then
@@ -199,8 +199,8 @@ class OperationsTestsFind : BaseITest {
       string = "two"
       decimal = 2d
     }
-    Operations.persistObj(db, obj1)
-    Operations.persistObj(db, obj2)
+    Operations.insert(db, obj1)
+    Operations.insert(db, obj2)
   }
 
 }

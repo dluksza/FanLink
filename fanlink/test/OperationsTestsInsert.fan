@@ -8,7 +8,7 @@ class OperationsTestsPersist : BaseITest {
     }
 
     // when
-    Operations.persistObj(db, obj)
+    Operations.insert(db, obj)
 
     // then
     map := findPersistedObj(TestObj#)
@@ -24,7 +24,7 @@ class OperationsTestsPersist : BaseITest {
     }
 
     //when
-    Operations.persistObj(db, obj)
+    Operations.insert(db, obj)
 
     // then
     map := findPersistedObj(TestObjWithTransient#)
@@ -40,7 +40,7 @@ class OperationsTestsPersist : BaseITest {
 
     // when
     verifyErr(FanLinkSerializationErr#, |->| {
-      Operations.persistObj(db, obj)
+      Operations.insert(db, obj)
     })
   }
 
@@ -52,7 +52,7 @@ class OperationsTestsPersist : BaseITest {
     }
 
     // when
-    Operations.persistObj(db, obj)
+    Operations.insert(db, obj)
 
     // then
     map := findPersistedObj(TestObjWithListAndMap#)
@@ -77,7 +77,7 @@ class OperationsTestsPersist : BaseITest {
     }
 
     // when
-    Operations.persistObj(db, obj)
+    Operations.insert(db, obj)
 
     // then
     map := findPersistedObj(TestObjWithNested#)
@@ -98,7 +98,7 @@ class OperationsTestsPersist : BaseITest {
     }
 
     // when
-    Operations.persistObj(db, obj)
+    Operations.insert(db, obj)
 
     // then
     map := findPersistedObj(TestObjWithDoubleNesting#)

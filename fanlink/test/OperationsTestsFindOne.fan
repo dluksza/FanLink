@@ -64,8 +64,8 @@ class OperationsTestsFindOne : BaseITest {
   }
   
   private Void persistTwoObjects(MongoDoc obj1, MongoDoc obj2) {
-    Operations.persistObj(db, obj1)
-    Operations.persistObj(db, obj2)
+    Operations.insert(db, obj1)
+    Operations.insert(db, obj2)
   }
   
 }

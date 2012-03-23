@@ -26,11 +26,13 @@ class OperationsTestsFind : BaseITest {
     r1 := result1[0] as TestObj
     verifyEq(r1.string, "one")
     verifyEq(r1.decimal, 1d)
+    verifyNotNull(r1._id)
     verifyEq(result2.size, 1)
   	verifyType(result2[0], TestObj#)
     r2 := result2[0] as TestObj
     verifyEq(r2.string, "two")
     verifyEq(r2.decimal, 2d)
+    verifyNotNull(r2._id)
   }
 
   Void testReturnFilteredResults2() {
@@ -57,10 +59,12 @@ class OperationsTestsFind : BaseITest {
     r1 := result1[0] as TestObj
     verifyEq(r1.string, "one")
     verifyEq(r1.decimal, 1d)
+    verifyNotNull(r1._id)
     verifyType(result1[1], TestObj#)
     r2 := result1[1] as TestObj
     verifyEq(r2.string, "one")
     verifyEq(r2.decimal, 1.5d)
+    verifyNotNull(r2._id)
   }
   
   Void testFindEntryWithNullValues() {
@@ -89,6 +93,7 @@ class OperationsTestsFind : BaseITest {
     r := result[0] as TestObj
     verifyEq(r.string, "none")
     verifyNull(r.decimal)
+    verifyNotNull(r._id)
   }
   
   Void testFindFirstTwoEntrys() {
@@ -116,10 +121,12 @@ class OperationsTestsFind : BaseITest {
     r1 := result[0] as TestObj
     verifyEq(r1.string, "one")
     verifyEq(r1.decimal, 1d)
+    verifyNotNull(r1._id)
     verifyType(result[1], TestObj#)
     r2 := result[1] as TestObj
     verifyEq(r2.string, "two")
     verifyEq(r2.decimal, 2d)
+    verifyNotNull(r2._id)
   }
 
   Void testSkipOneEntry() {
@@ -147,10 +154,12 @@ class OperationsTestsFind : BaseITest {
     r1 := result[0] as TestObj
     verifyEq(r1.string, "two")
     verifyEq(r1.decimal, 2d)
+    verifyNotNull(r1._id)
     verifyType(result[1], TestObj#)
     r2 := result[1] as TestObj
     verifyEq(r2.string, "three")
     verifyEq(r2.decimal, 3d)
+    verifyNotNull(r2._id)
   }
 
   Void testLimitFieldsInResult() {
@@ -178,6 +187,7 @@ class OperationsTestsFind : BaseITest {
     r1 := result[0] as TestObj
     verifyEq(r1.string, "one")
     verifyEq(r1.decimal, null)
+    verifyNotNull(r1._id)
   }
 
   private Void initData() {

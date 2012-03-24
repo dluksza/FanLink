@@ -10,7 +10,12 @@ Nested objects are converted into nested maps, FanLink doesn't support DBRef.
 Examples
 ========
 
-Each persist able object need to extend MongoDoc mixin, define it-block-constructor and storage for _id eg:
+Each persist able object must:
+
+ * be a const class,
+ * extend MongoDoc mixin,
+ * define it-block-constructor and
+ * define storage for _id eg:
 
 ```fantom
 using fanlink
@@ -28,7 +33,7 @@ const class SimpleMongoObj : MongoDoc {
 }
 ```
 
-It is not required that MongoDoc objects must be const classes but it is recommended. All simple types like:
+All simple types like:
 
  * Str,
  * Bool,

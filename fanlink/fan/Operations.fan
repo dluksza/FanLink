@@ -19,6 +19,19 @@ class Operations {
     db.collection(collectionName).insert(doc, safe)
   }
 
+  static Void update(DB db, FindFilter filter, MongoDoc obj,
+                Bool upsert := false, Bool multi := false, Bool safe := false) {
+    type := obj.typeof
+    doc := Serializer.serialize(obj)
+    filterMap := Serializer.serialize(filter.filter)
+    filterMap = filterMap.exclude |value, key| {
+      !filter.fieldNames.contains(key)
+    }
+    collectionName := Utils.mongoDocName(type)
+
+    db.collection(collectionName).update(filterMap, doc, upsert, multi, safe)
+  }
+
   static MongoDoc[] findAll(DB db, Type type) {
     collectionName := Utils.mongoDocName(type)
     collections := db.collection(collectionName).find

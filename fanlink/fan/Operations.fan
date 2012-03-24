@@ -21,15 +21,11 @@ class Operations {
 
   static Void update(DB db, FindFilter filter, MongoDoc obj,
                 Bool upsert := false, Bool multi := false, Bool safe := false) {
-    type := obj.typeof
+    mongoFilter := getMongoFindObj(filter)
     doc := Serializer.serialize(obj)
-    filterMap := Serializer.serialize(filter.filter)
-    filterMap = filterMap.exclude |value, key| {
-      !filter.fieldNames.contains(key)
-    }
-    collectionName := Utils.mongoDocName(type)
+    collectionName := Utils.mongoDocName(mongoFilter.type)
 
-    db.collection(collectionName).update(filterMap, doc, upsert, multi, safe)
+    db.collection(collectionName).update(mongoFilter.filterMap, doc, upsert, multi, safe)
   }
 
   static MongoDoc[] findAll(DB db, Type type) {
@@ -50,20 +46,35 @@ class Operations {
   }
 
   static MongoDoc[] find(DB db, FindFilter filter, FindOpts opts := FindOpts {}) {
-    type := filter.filter.typeof
-    filterMap := Serializer.serialize(filter.filter)
-    options := FindOpts.convertToMap(opts)
-    collectionName := Utils.mongoDocName(type)
-    filterMap = filterMap.exclude |value, key| {
-      !filter.fieldNames.contains(key)
-    }
-    collections := db.collection(collectionName).find(filterMap, options)
+    mongoFilter := getMongoFindObj(filter, opts)
+    collectionName := Utils.mongoDocName(mongoFilter.type)
+    collections := db.collection(collectionName).find(mongoFilter.filterMap, mongoFilter.options)
     result := MongoDoc[,]
     collections.each |element| {
-      result.add(Deserializer.deserialize(element, type))
+      result.add(Deserializer.deserialize(element, mongoFilter.type))
     }
 
     return result.toImmutable
   }
 
+  internal static MongoFindObj getMongoFindObj(FindFilter filter, FindOpts opts := FindOpts {}) {
+    MongoFindObj {
+      type = filter.filter.typeof
+      options = FindOpts.convertToMap(opts)
+      filterMap = Serializer.serialize(filter.filter).exclude |value, key| {
+        !filter.fieldNames.contains(key)
+      }
+    }
+  }
+
+}
+
+internal const class MongoFindObj {
+  const Type type
+  const Str:Obj? filterMap
+  const Str:Obj options
+
+  new make(|This f| f) {
+    f(this)
+  }
 }
